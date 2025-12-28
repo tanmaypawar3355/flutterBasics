@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857993750500",
+    "project_id": "loginauthentication-d884d",
+    "storage_bucket": "loginauthentication-d884d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857993750500:android:31f2b1d827dd07df3dc9f1",
+        "android_client_info": {
+          "package_name": "com.example.practice_flutter_application_28"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlu2Y8mql3uxS6Pi0dsZiJQ-jvOW7h9Dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
