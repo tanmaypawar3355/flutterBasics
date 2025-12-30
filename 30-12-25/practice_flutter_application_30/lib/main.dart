@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:practice_flutter_application_30/pages/log_in_page.dart';
+import 'package:practice_flutter_application_30/services/auth_service.dart';
+import 'package:practice_flutter_application_30/services/navigation_service.dart';
+import 'package:practice_flutter_application_30/utils.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setUp();
+  runApp(MyApp());
+}
+
+Future<void> setUp() async {
+  await setUpFirebase();
+  await registerServices();
+}
+
+class MyApp extends StatelessWidget {
+  final GetIt _getIt = GetIt.instance;
+  late AuthService _authService;
+  late NavigationService _navigationService;
+
+  MyApp({super.key}) {
+    _authService = _getIt.get<AuthService>();
+    _navigationService = _getIt.get<NavigationService>();
+  }
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: _navigationService.navigationKey,
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          primary: Colors.blue,
+        ),
+        textTheme: GoogleFonts.montserratTextTheme(),
+      ),
+      home: LogInPage(),
+      initialRoute: "/login",
+      routes: _navigationService.routes,
+    );
+  }
+}
