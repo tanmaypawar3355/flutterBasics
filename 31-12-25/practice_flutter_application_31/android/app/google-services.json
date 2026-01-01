@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "18253686032",
+    "project_id": "login-logout-register-toast",
+    "storage_bucket": "login-logout-register-toast.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18253686032:android:61c61737772b9981afb195",
+        "android_client_info": {
+          "package_name": "com.example.practice_flutter_application_31"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHCJKfORmaPXe_LRmNE-Re2yvDPTYvOuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
