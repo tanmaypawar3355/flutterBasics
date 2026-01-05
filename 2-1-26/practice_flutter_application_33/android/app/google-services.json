@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "942366881830",
+    "project_id": "ln-lo-reg-tst-strage-firestore",
+    "storage_bucket": "ln-lo-reg-tst-strage-firestore.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942366881830:android:08e34558a23198efa3cee7",
+        "android_client_info": {
+          "package_name": "com.example.practice_flutter_application_33"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIyqFuw6SSibzM5itMiC635in_RlCnmhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
