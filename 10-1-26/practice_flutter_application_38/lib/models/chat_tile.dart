@@ -13,6 +13,7 @@ class ChatTile extends StatelessWidget {
       onTap: () {
         onTap();
       },
+      dense: false,
       leading: CircleAvatar(backgroundImage: NetworkImage(userProfile.pfpURL!)),
       title: Text(userProfile.name!),
     );

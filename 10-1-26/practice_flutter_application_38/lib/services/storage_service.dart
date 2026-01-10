@@ -11,9 +11,9 @@ class StorageService {
         .ref("users/pfp")
         .child("$uid${p.extension(file.path)}");
 
-    UploadTask task = ref.putFile(file);
+    TaskSnapshot task = await ref.putFile(file);
 
-    if (task.snapshot == TaskState.success) {
+    if (task.state == TaskState.success) {
       return await ref.getDownloadURL();
     }
   }

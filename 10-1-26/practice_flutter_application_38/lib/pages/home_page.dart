@@ -69,16 +69,20 @@ class _HomePageState extends State<HomePage> {
       stream: _databaseService.getUserProfile(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text("Unable to load data"));
+          return Center(child: Text("Unable to load data."));
         }
 
         if (snapshot.hasData && snapshot.data != null) {
+          print(snapshot.data);
           final users = snapshot.data!.docs;
           return ListView.builder(
             itemCount: users.length,
             itemBuilder: (context, index) {
               UserProfile userP = users[index].data();
-              return ChatTile(userProfile: userP, onTap: () {});
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: ChatTile(userProfile: userP, onTap: () {}),
+              );
             },
           );
         }

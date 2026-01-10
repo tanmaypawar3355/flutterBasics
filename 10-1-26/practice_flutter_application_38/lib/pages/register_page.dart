@@ -91,7 +91,7 @@ class _LoginPageState extends State<RegisterPage> {
               height: MediaQuery.sizeOf(context).height * 0.10,
               hintText: "Name",
               obscureText: false,
-              validationRegexp: NAME_VALIDATION_REGEX,
+              validationRegExp: NAME_VALIDATION_REGEX,
               onSaved: (value) {
                 setState(() {
                   name = value;
@@ -102,7 +102,7 @@ class _LoginPageState extends State<RegisterPage> {
               height: MediaQuery.sizeOf(context).height * 0.10,
               hintText: "Email",
               obscureText: false,
-              validationRegexp: EMAIL_VALIDATION_REGEX,
+              validationRegExp: EMAIL_VALIDATION_REGEX,
               onSaved: (value) {
                 setState(() {
                   email = value;
@@ -113,7 +113,7 @@ class _LoginPageState extends State<RegisterPage> {
               height: MediaQuery.sizeOf(context).height * 0.10,
               hintText: "Password",
               obscureText: true,
-              validationRegexp: PASSWORD_VALIDATION_REGEX,
+              validationRegExp: PASSWORD_VALIDATION_REGEX,
               onSaved: (value) {
                 setState(() {
                   password = value;
@@ -155,18 +155,21 @@ class _LoginPageState extends State<RegisterPage> {
             if (_registerFormKey.currentState?.validate() ?? false) {
               _registerFormKey.currentState!.save();
 
-              bool results = await _authService.signin(email!, password!);
+              bool results = await _authService.signup(email!, password!);
               String? pfpURL = await _storageService.uploadUserPFP(
                 file: _selectedImage!,
                 uid: _authService.user!.uid,
               );
-              _databaseService.createUserProfile(
-                userProfile: UserProfile(
-                  uid: _authService.user!.uid,
-                  name: name,
-                  pfpURL: pfpURL,
-                ),
-              );
+
+              if (pfpURL != null) {
+                await _databaseService.createUserProfile(
+                  userProfile: UserProfile(
+                    uid: _authService.user!.uid,
+                    name: name,
+                    pfpURL: pfpURL,
+                  ),
+                );
+              }
 
               _navigationService.goBack();
               _navigationService.pushReplacementNamed("/home");

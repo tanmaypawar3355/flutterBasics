@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
               height: MediaQuery.sizeOf(context).height * 0.10,
               hintText: "Email",
               obscureText: false,
-              validationRegexp: EMAIL_VALIDATION_REGEX,
+              validationRegExp: EMAIL_VALIDATION_REGEX,
               onSaved: (value) {
                 setState(() {
                   email = value;
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               height: MediaQuery.sizeOf(context).height * 0.10,
               hintText: "Password",
               obscureText: true,
-              validationRegexp: PASSWORD_VALIDATION_REGEX,
+              validationRegExp: PASSWORD_VALIDATION_REGEX,
               onSaved: (value) {
                 setState(() {
                   password = value;
