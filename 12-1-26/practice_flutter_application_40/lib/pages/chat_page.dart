@@ -10,6 +10,8 @@ import 'package:practice_flutter_application_40/models/user_profile.dart';
 import 'package:practice_flutter_application_40/services/auth_service.dart';
 import 'package:practice_flutter_application_40/services/database_service.dart';
 import 'package:practice_flutter_application_40/services/media_service.dart';
+import 'package:practice_flutter_application_40/services/storage_service.dart';
+import 'package:practice_flutter_application_40/utils.dart';
 
 class ChatPage extends StatefulWidget {
   final UserProfile chatUser;
@@ -27,6 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   late DatabaseService _databaseService;
   late AuthService _authService;
   late MediaService _mediaService;
+  late StorageService _storageService;
 
   @override
   void initState() {
@@ -34,6 +37,7 @@ class _ChatPageState extends State<ChatPage> {
     _databaseService = _getIt.get<DatabaseService>();
     _authService = _getIt.get<AuthService>();
     _mediaService = _getIt.get<MediaService>();
+    _storageService = _getIt.get<StorageService>();
 
     currentUser = ChatUser(
       id: _authService.user!.uid,
@@ -48,7 +52,10 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _buildUI());
+    return Scaffold(
+      appBar: AppBar(title: Text("${otherUser!.firstName}")),
+      body: _buildUI(),
+    );
   }
 
   Widget _buildUI() {
@@ -78,7 +85,7 @@ class _ChatPageState extends State<ChatPage> {
             alwaysShowSend: true,
             trailing: [
               SizedBox(width: 10),
-              _messageMediaButton,
+              _messageMediaButton(),
               SizedBox(width: 10),
             ],
           ),
@@ -94,28 +101,58 @@ class _ChatPageState extends State<ChatPage> {
   //////////////////////////////////////////////////////////////////////////
 
   Future<void> _sendMessage(ChatMessage chatMessage) async {
-    Message message = Message(
-      senderID: currentUser!.id,
-      content: chatMessage.text,
-      messageType: MessageType.Text,
-      sentAt: Timestamp.fromDate(chatMessage.createdAt),
-    );
-    _databaseService.sendChatMessage(currentUser!.id, otherUser!.id, message);
+    if (chatMessage.medias?.isNotEmpty ?? false) {
+      if (chatMessage.medias!.first.type == MediaType.image) {
+        Message message = Message(
+          senderID: chatMessage.user.id,
+          content: chatMessage.medias!.first.url,
+          messageType: MessageType.Image,
+          sentAt: Timestamp.fromDate(chatMessage.createdAt),
+        );
+        await _databaseService.sendChatMessage(
+          currentUser!.id,
+          otherUser!.id,
+          message,
+        );
+      }
+    } else {
+      Message message = Message(
+        senderID: currentUser!.id,
+        content: chatMessage.text,
+        messageType: MessageType.Text,
+        sentAt: Timestamp.fromDate(chatMessage.createdAt),
+      );
+      await _databaseService.sendChatMessage(
+        currentUser!.id,
+        otherUser!.id,
+        message,
+      );
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
 
   List<ChatMessage> _generateChatMessageList(List<Message> messages) {
-    List<ChatMessage> chatMessages = messages
-        .map(
-          (m) => ChatMessage(
-            user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
-            text: m.content!,
-            createdAt: m.sentAt!.toDate(),
-          ),
-        )
-        .toList();
+    List<ChatMessage> chatMessages = messages.map((m) {
+      if (m.messageType == MessageType.Image) {
+        return ChatMessage(
+          user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+          createdAt: m.sentAt!.toDate(),
+          medias: [
+            ChatMedia(url: m.content!, fileName: "", type: MediaType.image),
+          ],
+        );
+      } else {
+        return ChatMessage(
+          user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+          text: m.content!,
+          createdAt: m.sentAt!.toDate(),
+        );
+      }
+    }).toList();
+
+    chatMessages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return chatMessages;
   }
@@ -123,14 +160,32 @@ class _ChatPageState extends State<ChatPage> {
   //////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
 
-  Widget _messageMediaButton()  {
-
+  Widget _messageMediaButton() {
     return IconButton(
-      onPressed: () {
-        
+      onPressed: () async {
+        File? file = await _mediaService.getImageFromGallery();
+        if (file != null) {
+          String chatID = generateChatID(
+            uid1: currentUser!.id,
+            uid2: otherUser!.id,
+          );
+          String? imageURL = await _storageService.uploadTheImageToChat(
+            file,
+            chatID,
+          );
+          if (imageURL != null) {
+            ChatMessage chatMessage = ChatMessage(
+              user: currentUser!,
+              createdAt: DateTime.timestamp(),
+              medias: [
+                ChatMedia(url: imageURL, fileName: "", type: MediaType.image),
+              ],
+            );
+            _sendMessage(chatMessage);
+          }
+        }
       },
-      icon: Icon(Icons.image),
+      icon: Icon(Icons.image, color: Colors.blue),
     );
-    File? file = await _mediaService.getImageFromGallery();
   }
 }
