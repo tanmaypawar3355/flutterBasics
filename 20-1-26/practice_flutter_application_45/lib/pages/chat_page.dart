@@ -11,6 +11,8 @@ import 'package:practice_flutter_application_45/services/auth_service.dart';
 import 'package:practice_flutter_application_45/services/database_service.dart';
 import 'package:practice_flutter_application_45/services/media_service.dart';
 import 'package:practice_flutter_application_45/services/navigation_service.dart';
+import 'package:practice_flutter_application_45/services/storage_service.dart';
+import 'package:practice_flutter_application_45/utils.dart';
 
 class ChatPage extends StatefulWidget {
   final UserProfile chatUser;
@@ -28,7 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   ChatUser? currentUser, otherUser;
   // late AlertService _alertService;
   late MediaService _mediaService;
-  // late StorageService _storageService;
+  late StorageService _storageService;
   late DatabaseService _databaseService;
 
   @override
@@ -48,7 +50,7 @@ class _ChatPageState extends State<ChatPage> {
     );
     // _alertService = _getIt.get<AlertService>();
     _mediaService = _getIt.get<MediaService>();
-    // _storageService = _getIt.get<StorageService>();
+    _storageService = _getIt.get<StorageService>();
     _databaseService = _getIt.get<DatabaseService>();
   }
 
@@ -115,22 +117,48 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage(ChatMessage chatMessage) {
-    Message message = Message(
-      senderID: currentUser!.id,
-      content: chatMessage.text,
-      messageType: MessageType.Text,
-      sentAt: Timestamp.fromDate(chatMessage.createdAt),
-    );
-    _databaseService.sendChatMessage(currentUser!.id, otherUser!.id, message);
+    if (chatMessage.medias?.isNotEmpty ?? false) {
+      if (chatMessage.medias!.first.type == MediaType.image) {
+        Message message = Message(
+          senderID: currentUser!.id,
+          content: chatMessage.medias!.first.url,
+          messageType: MessageType.Image,
+          sentAt: Timestamp.fromDate(chatMessage.createdAt),
+        );
+        _databaseService.sendChatMessage(
+          currentUser!.id,
+          otherUser!.id,
+          message,
+        );
+      }
+    } else {
+      Message message = Message(
+        senderID: currentUser!.id,
+        content: chatMessage.text,
+        messageType: MessageType.Text,
+        sentAt: Timestamp.fromDate(chatMessage.createdAt),
+      );
+      _databaseService.sendChatMessage(currentUser!.id, otherUser!.id, message);
+    }
   }
 
   List<ChatMessage> _generateChatMessageList(List<Message> messages) {
     List<ChatMessage> chatMessage = messages.map((m) {
-      return ChatMessage(
-        user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
-        text: m.content!,
-        createdAt: m.sentAt!.toDate(),
-      );
+      if (m.messageType == MessageType.Image) {
+        return ChatMessage(
+          user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+          medias: [
+            ChatMedia(url: m.content!, fileName: "", type: MediaType.image),
+          ],
+          createdAt: m.sentAt!.toDate(),
+        );
+      } else {
+        return ChatMessage(
+          user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+          text: m.content!,
+          createdAt: m.sentAt!.toDate(),
+        );
+      }
     }).toList();
 
     chatMessage.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -141,10 +169,28 @@ class _ChatPageState extends State<ChatPage> {
   Widget _messageMediaButton() {
     return IconButton(
       onPressed: () async {
-        File? image = await _mediaService.selectImageFromGallery();
+        File? file = await _mediaService.selectImageFromGallery();
 
-        if(image!= null) {
-          
+        if (file != null) {
+          String chatID = generateChatId(
+            uid1: currentUser!.id,
+            uid2: otherUser!.id,
+          );
+
+          String? imageURL = await _storageService.uploadChatImage(
+            file: file,
+            chatID: chatID,
+          );
+
+          ChatMessage chatMessage = ChatMessage(
+            user: currentUser!,
+            medias: [
+              ChatMedia(url: imageURL!, fileName: "", type: MediaType.image),
+            ],
+            createdAt: DateTime.now(),
+          );
+
+          _sendMessage(chatMessage);
         }
       },
       icon: Icon(Icons.image),

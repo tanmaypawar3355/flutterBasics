@@ -210,7 +210,9 @@ class _LoginPageState extends State<RegisterPage> {
         children: [
           Text("Already have an account?  "),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              _navigationService.pushNamed("/login");
+            },
             child: Text(
               "Log In",
               style: TextStyle(fontWeight: FontWeight.w900),

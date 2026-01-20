@@ -40,7 +40,7 @@ class CustomFormField extends StatelessWidget {
         }
 
         if (hintText == "Password" && whichPage == "RegisterPage") {
-          return "Enter a valid password\nPassword must include one uppercase letter, one lowecase letter, one number, and one special character";
+          return "Enter a valid password\nPassword must include one uppercase letter, one\nlowecase letter, one number, & one special character";
         }
         return null;
       },

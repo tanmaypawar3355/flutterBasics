@@ -26,7 +26,16 @@ class StorageService {
   Future<String?> uploadChatImage({
     required File file,
     required String chatID,
-  }) {
-    // _firebaseStorage.ref("chats/$chatID").child(path)
+  }) async {
+    Reference _ref = _firebaseStorage
+        .ref("chats/$chatID")
+        .child('${DateTime.now().toIso8601String()}${p.extension(file.path)}');
+
+    TaskSnapshot task = await _ref.putFile(file);
+
+    if (task.state == TaskState.success) {
+      return _ref.getDownloadURL();
+    }
+    return null;
   }
 }
