@@ -59,6 +59,7 @@ class _HomePage4State extends State<HomePage5> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
+                final user = snapshot.data![index] as Map<String, dynamic>;
                 return Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: Card(
@@ -67,37 +68,25 @@ class _HomePage4State extends State<HomePage5> {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          Text("Id : ${snapshot.data![index].id.toString()}"),
-                          Text(
-                            "Name : ${snapshot.data![index].name.toString()}",
-                          ),
-                          Text(
-                            "Username : ${snapshot.data![index].username.toString()}",
-                          ),
-                          Text(
-                            "Email : ${snapshot.data![index].email.toString()}",
-                          ),
+                          Text("Id : ${user['id']}"),
+                          Text("Name : ${user['name']}"),
+                          Text("Username : ${user['username']}"),
+                          Text("Email : ${user['email']}"),
 
                           const SizedBox(height: 20),
 
                           Card(
                             color: Colors.grey[400],
                             child: Padding(
-                              padding: EdgeInsetsGeometry.all(20),
+                              padding: const EdgeInsets.all(20),
                               child: Column(
                                 children: [
-                                  Text("Address"),
+                                  const Text("Address"),
+                                  Text("Street : ${user['address']['street']}"),
+                                  Text("Suite : ${user['address']['suite']}"),
+                                  Text("City : ${user['address']['city']}"),
                                   Text(
-                                    "Street : ${snapshot.data![index].address!.street.toString()}",
-                                  ),
-                                  Text(
-                                    "Suite : ${snapshot.data![index].address!.suite.toString()}",
-                                  ),
-                                  Text(
-                                    "City : ${snapshot.data![index].address!.city.toString()}",
-                                  ),
-                                  Text(
-                                    "Zipcode : ${snapshot.data![index].address!.zipcode.toString()}",
+                                    "Zipcode : ${user['address']['zipcode']}",
                                   ),
 
                                   const SizedBox(height: 30),
@@ -108,12 +97,12 @@ class _HomePage4State extends State<HomePage5> {
                                       padding: const EdgeInsets.all(20.0),
                                       child: Column(
                                         children: [
-                                          Text("Geo"),
+                                          const Text("Geo"),
                                           Text(
-                                            "Lat : ${snapshot.data![index].address!.geo!.lat.toString()}",
+                                            "Lat : ${user['address']['geo']['lat']}",
                                           ),
                                           Text(
-                                            "Lng : ${snapshot.data![index].address!.geo!.lng.toString()}",
+                                            "Lng : ${user['address']['geo']['lng']}",
                                           ),
                                         ],
                                       ),
@@ -123,14 +112,11 @@ class _HomePage4State extends State<HomePage5> {
                               ),
                             ),
                           ),
+
                           const SizedBox(height: 30),
 
-                          Text(
-                            "Phone : ${snapshot.data![index].phone.toString()}",
-                          ),
-                          Text(
-                            "Website : ${snapshot.data![index].website.toString()}",
-                          ),
+                          Text("Phone : ${user['phone']}"),
+                          Text("Website : ${user['website']}"),
 
                           const SizedBox(height: 30),
 
@@ -139,16 +125,12 @@ class _HomePage4State extends State<HomePage5> {
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
                                 children: [
-                                  Text("Company"),
+                                  const Text("Company"),
+                                  Text("Name : ${user['company']['name']}"),
                                   Text(
-                                    "Name : ${snapshot.data![index].company!.name.toString()}",
+                                    "Catch phrase : ${user['company']['catchPhrase']}",
                                   ),
-                                  Text(
-                                    "Catch phrase : ${snapshot.data![index].company!.catchPhrase.toString()}",
-                                  ),
-                                  Text(
-                                    "Bs : ${snapshot.data![index].company!.bs.toString()}",
-                                  ),
+                                  Text("Bs : ${user['company']['bs']}"),
                                 ],
                               ),
                             ),
