@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -18,18 +19,19 @@ class _HomePage5State extends State<HomePage5> {
     futureBuilder = getNestedWithoutModelClass();
   }
 
+  var data;
+
   Future<dynamic> getNestedWithoutModelClass() async {
     final response = await http.get(
       Uri.parse("https://jsonplaceholder.typicode.com/users"),
     );
 
-    final data = jsonDecode(response.body.toString());
-
     if (response.statusCode == 200) {
+      data = jsonDecode(response.body.toString());
       print(data);
       return data;
     }
-    return null;
+    // return null;
   }
 
   @override
@@ -50,119 +52,17 @@ class _HomePage5State extends State<HomePage5> {
             return Center(child: Text("NO DATA"));
           }
 
-          if (snapshot.hasData) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: data!.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30.0,
                     vertical: 30,
                   ),
-                  child: Card(
-                    color: Colors.grey[300],
-                    child: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Name : ${snapshot.data![index].name.toString()}",
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Username : ${snapshot.data![index].username.toString()}",
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Email : ${snapshot.data![index].email.toString()}",
-                          ),
-
-                          const SizedBox(height: 20),
-                          Card(
-                            color: Colors.grey[400],
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                children: [
-                                  Text("Address"),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Street : ${snapshot.data![index].address!.street.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Suite : ${snapshot.data![index].address!.suite.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "City : ${snapshot.data![index].address!.city.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Zipcode : ${snapshot.data![index].address!.zipcode.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-
-                                  Card(
-                                    color: Colors.grey[300],
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        children: [
-                                          Text("Geo"),
-                                          Text(
-                                            "Lat : ${snapshot.data![index].address!.geo!.lat.toString()}",
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            "Lng : ${snapshot.data![index].address!.geo!.lng.toString()}",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-                          Text(
-                            "Phone : ${snapshot.data![index].phone.toString()}",
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Website : ${snapshot.data![index].website.toString()}",
-                          ),
-
-                          const SizedBox(height: 30),
-
-                          Card(
-                            color: Colors.grey[400],
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                children: [
-                                  Text("Company"),
-                                  Text(
-                                    "Company Name : ${snapshot.data![index].company!.name.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Catch phrase : ${snapshot.data![index].company!.catchPhrase.toString()}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Bs : ${snapshot.data![index].company!.bs.toString()}",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: ReusableCard(data: data, index: index),
                 );
               },
             );
@@ -170,6 +70,97 @@ class _HomePage5State extends State<HomePage5> {
 
           return Text("Hii");
         },
+      ),
+    );
+  }
+}
+class ReusableCard extends StatelessWidget {
+  final List data;
+  final int index;
+
+  const ReusableCard({
+    super.key,
+    required this.data,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final user = data[index];
+
+    return Card(
+      color: Colors.grey[300],
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Name : ${user['name']}"),
+            const SizedBox(height: 10),
+            Text("Username : ${user['username']}"),
+            const SizedBox(height: 10),
+            Text("Email : ${user['email']}"),
+
+            const SizedBox(height: 20),
+
+            Card(
+              color: Colors.grey[400],
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Address"),
+                    const SizedBox(height: 10),
+                    Text("Street : ${user['address']['street']}"),
+                    Text("Suite : ${user['address']['suite']}"),
+                    Text("City : ${user['address']['city']}"),
+                    Text("Zipcode : ${user['address']['zipcode']}"),
+
+                    const SizedBox(height: 10),
+
+                    Card(
+                      color: Colors.grey[300],
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Geo"),
+                            Text("Lat : ${user['address']['geo']['lat']}"),
+                            Text("Lng : ${user['address']['geo']['lng']}"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            Text("Phone : ${user['phone']}"),
+            Text("Website : ${user['website']}"),
+
+            const SizedBox(height: 30),
+
+            Card(
+              color: Colors.grey[400],
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Company"),
+                    Text("Company Name : ${user['company']['name']}"),
+                    Text("Catch Phrase : ${user['company']['catchPhrase']}"),
+                    Text("BS : ${user['company']['bs']}"),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
