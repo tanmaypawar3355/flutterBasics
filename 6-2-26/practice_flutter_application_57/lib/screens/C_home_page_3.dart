@@ -40,6 +40,17 @@ class _HomePage1State extends State<HomePage3> {
       body: FutureBuilder(
         future: getAPI(),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text("ERROR"));
+          }
+
+          if (!snapshot.hasData) {
+            return Center(child: Text("NO DATA"));
+          }
           return ListView.builder(
             itemCount: myList.length,
             itemBuilder: (context, index) {
