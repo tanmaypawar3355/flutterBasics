@@ -51,8 +51,7 @@ class APIService {
   //////////////////////////////////////////////////////////////////////////////////////////////
 
   //  C
-  Future<List<GetMultipleObjectWithModel>?>
-  getMultipleObjectWithModel() async {
+  Future<List<GetMultipleObjectWithModel>?> getMultipleObjectWithModel() async {
     try {
       http.Response response = await http.get(
         Uri.parse("https://jsonplaceholder.typicode.com/posts"),
@@ -100,47 +99,36 @@ class APIService {
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
 
+  // E
   Future<String?> postAPI(String email, password) async {
-    try {
-      print("In post");
-      http.Response response = await http.post(
-        Uri.parse("https://api.escuelajs.co/api/v1/auth/login"),
-        body: {"email": email, "password": password},
-      );
+    http.Response response = await http.post(
+      Uri.parse("https://api.escuelajs.co/api/v1/auth/login"),
+      body: {"email": email, "password": password},
+    );
 
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-
-        String accessToken = data["access_token"];
-        print(accessToken);
-        return accessToken;
-      }
-    } catch (e) {
-      print(e);
+    if (response.statusCode == 201) {
+      var data = jsonDecode(response.body);
+      String accessToken = data['access_token'];
+      return accessToken;
     }
     return null;
   }
 
   Future<dynamic> getAPI(String accessToken) async {
-    try {
-      print(accessToken);
-      print("in get");
-      http.Response response = await http.get(
-        Uri.parse("https://api.escuelajs.co/api/v1/auth/profile"),
-        headers: {"Authorization": "Bearer $accessToken"},
-      );
+    http.Response response = await http.get(
+      Uri.parse("https://api.escuelajs.co/api/v1/auth/profile"),
+      headers: {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      },
+    );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print(data);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
 
-        return data;
-      } else {
-        print(response.statusCode);
-      }
-    } catch (e) {
-      print(e);
+      return data;
     }
+    print("bye");
 
     return null;
   }
