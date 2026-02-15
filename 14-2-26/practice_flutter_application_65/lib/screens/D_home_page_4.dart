@@ -1,33 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:practice_flutter_application_64/API_service.dart';
+import 'package:practice_flutter_application_65/API_service.dart';
+import 'package:practice_flutter_application_65/models/C_multiple_object_model_3.dart';
 
 class HomePage4 extends StatefulWidget {
   const HomePage4({super.key});
 
   @override
-  State<HomePage4> createState() => _HomePage4State();
+  State<HomePage4> createState() => _HomePage3State();
 }
 
-class _HomePage4State extends State<HomePage4> {
+class _HomePage3State extends State<HomePage4> {
   dynamic data;
   bool isReady = false;
 
-  void getData() {
+  void getData() async {
     setState(() {
-      isReady = true;
+      isReady = false;
     });
-    ApiService()
-        .getMultipleObjectWithoutModel()
+    await ApiService()
+        .getMultipleObjectWithoutModelAPI()
         .then((value) {
           setState(() {
             data = value;
-            print(data);
-            isReady = false;
+            isReady = true;
           });
         })
         .onError((error, stackTrace) {
+          print(error.toString());
           setState(() {
-            isReady = true;
+            isReady = false;
           });
         });
   }
@@ -46,24 +47,25 @@ class _HomePage4State extends State<HomePage4> {
         centerTitle: true,
         backgroundColor: Colors.lightBlue,
       ),
-      body: isReady
+      body: !isReady
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
+              itemCount: data.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Card(
                     child: ListTile(
                       leading: CircleAvatar(
                         child: Text(data[index]['id'].toString()),
                       ),
                       title: Text(
-                        data[index]['title'].toString(),
-                        style: TextStyle(color: Colors.red),
+                        data[index]["title"].toString(),
+                        style: TextStyle(color: Colors.red, fontSize: 20),
                       ),
                       subtitle: Text(
-                        data[index]['body'].toString(),
-                        style: TextStyle(color: Colors.blue),
+                        data[index]["body"].toString(),
+                        style: TextStyle(color: Colors.blue, fontSize: 13),
                       ),
                     ),
                   ),

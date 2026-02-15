@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:practice_flutter_application_65/API_service.dart';
 import 'package:practice_flutter_application_65/models/A_single_object_model_1.dart';
 
-class HomePage1 extends StatefulWidget {
-  const HomePage1({super.key});
+class HomePage2 extends StatefulWidget {
+  const HomePage2({super.key});
 
   @override
-  State<HomePage1> createState() => _HomePage1State();
+  State<HomePage2> createState() => _HomePage1State();
 }
 
-class _HomePage1State extends State<HomePage1> {
-  SingleObjectModel model = SingleObjectModel();
+class _HomePage1State extends State<HomePage2> {
+  dynamic data;
   bool isReady = false;
 
   void getData() async {
@@ -18,11 +18,12 @@ class _HomePage1State extends State<HomePage1> {
       isReady = false;
     });
     await ApiService()
-        .getSingleObjectWithModelAPI()
+        .getSingleObjectWithoutModelAPI()
         .then((value) {
           setState(() {
-            model = value!;
-            isReady = false;
+            data = value!;
+            isReady = true;
+            print(data);
           });
         })
         .onError((error, stackTrace) {
@@ -43,17 +44,19 @@ class _HomePage1State extends State<HomePage1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Single Object With Model"),
+        title: Text("Single Object Without Model"),
         centerTitle: true,
         backgroundColor: Colors.lightBlue,
       ),
-      body: Center(
-        child: ListTile(
-          leading: CircleAvatar(child: Text(model.id.toString())),
-          title: Text(model.title.toString()),
-          subtitle: Text(model.body.toString()),
-        ),
-      ),
+      body: !isReady
+          ? Center(child: CircularProgressIndicator())
+          : Center(
+              child: ListTile(
+                leading: CircleAvatar(child: Text(data['id'].toString())),
+                title: Text(data['title'].toString()),
+                subtitle: Text(data['body'].toString()),
+              ),
+            ),
     );
   }
 }

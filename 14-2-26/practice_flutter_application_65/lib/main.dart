@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:practice_flutter_application_65/screens/A_home_page_1.dart';
+import 'package:practice_flutter_application_65/screens/B_home_page_2.dart';
+import 'package:practice_flutter_application_65/screens/C_home_page_3.dart';
+import 'package:practice_flutter_application_65/screens/D_home_page_4.dart';
+import 'package:practice_flutter_application_65/screens/E_home_page_5.dart';
+import 'package:practice_flutter_application_65/screens/F_home_page_6.dart';
+import 'package:practice_flutter_application_65/screens/G_home_page_7.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage1()
+      home: HomePage7()
     );
   }
 }
