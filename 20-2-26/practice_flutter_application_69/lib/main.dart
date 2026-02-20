@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
+}
+
+class Model extends InheritedWidget {
+  final String title;
+
+  Model({
+    this.title = "Hello from InheritedWidget",
+    Key? key,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return true;
+  }
+
+  static Model? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Model>();
+  }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MyPageLevel1());
+    return Model(key: null, child: MaterialApp(home: MyPageLevel1()));
   }
 }
 
@@ -55,6 +74,7 @@ class MyPageLevel3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Hello World from level 3");
+    String str = Model.of(context)!.title;
+    return Text(str);
   }
 }
